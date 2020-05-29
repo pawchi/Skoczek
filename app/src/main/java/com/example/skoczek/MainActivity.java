@@ -3,6 +3,7 @@ package com.example.skoczek;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -11,10 +12,12 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,15 +50,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.skoczek_main);
 
-        if (savedInstanceState != null){
-            bestScore = savedInstanceState.getInt("bestScore");
-        }
+        Button buttonCreateBoard = (Button) findViewById(R.id.createBoard);
+
+        buttonCreateBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),BoardAnySize.class));
+            }
+        });
 
         DisplayMetrics dm = new DisplayMetrics();
         WindowManager windowManager = (WindowManager)getApplicationContext().getSystemService(WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(dm);
         int widthInDP = Math.round(dm.widthPixels/dm.density);
-        Toast.makeText(this, "Screen width pixels = " + dm.widthPixels, Toast.LENGTH_SHORT).show();
 
 
 
@@ -142,18 +149,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        if (bestScore == 0) {
-            outState.putInt("bestScore", countResult);
-        }
-        if (bestScore<countResult){
-            outState.putInt("bestScore", countResult);
-        }
     }
 
     @Override
