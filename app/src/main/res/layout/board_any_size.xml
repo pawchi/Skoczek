@@ -50,7 +50,8 @@
                         android:id="@+id/textSetColumns"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
-                        android:inputType="number" />
+                        android:inputType="number"
+                        android:hint="2 - 9"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -67,7 +68,8 @@
                         android:id="@+id/textSetRows"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
-                        android:inputType="number" />
+                        android:inputType="number"
+                        android:hint="2 - 9"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -81,7 +83,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:foregroundGravity="center_horizontal">
+        android:foregroundGravity="center_horizontal"
+        >
 
 
     </androidx.gridlayout.widget.GridLayout>

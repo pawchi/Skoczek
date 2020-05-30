@@ -2,6 +2,7 @@ package com.example.skoczek;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -14,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
-public class BoardAnySize extends AppCompatActivity {
+public class BoardAnySize extends AppCompatActivity implements View.OnClickListener {
 
     GridLayout gridLayoutAnySize;
     Button createBoard;
@@ -30,7 +31,9 @@ public class BoardAnySize extends AppCompatActivity {
         gridLayoutAnySize.removeAllViews();
 
         getColumns = findViewById(R.id.textSetColumns);
+        makeInputLimit(getColumns, 2, 9);
         getRows = findViewById(R.id.textSetRows);
+        makeInputLimit(getRows, 2, 9);
 
         createBoard = findViewById(R.id.buttonCreateBoard);
         createBoard.setOnClickListener(new View.OnClickListener() {
@@ -42,6 +45,10 @@ public class BoardAnySize extends AppCompatActivity {
 
 
 
+    }
+
+    private void makeInputLimit(EditText editText, int min, int max) {
+        editText.setFilters(new InputFilter[]{new InputFilterMinMax(min, max)});
     }
 
     public int getScreenWidthInPixels(){
@@ -57,28 +64,39 @@ public class BoardAnySize extends AppCompatActivity {
         myGrid.setColumnCount(column);
         myGrid.setRowCount(row);
 
-        for (int x =0; x<row; x++){
-            for (int y=0; y<column; y++) {
+        for (int x =1; x<row+1; x++){
+            for (int y=1; y<column+1; y++) {
 
                 TextView textView = new TextView(this);
                 android.widget.GridLayout.LayoutParams param = new android.widget.GridLayout.LayoutParams();
 
-                param.width = (getScreenWidthInPixels()/column)-column;
-                param.height = (getScreenWidthInPixels()/column)-column;
-                param.rightMargin = 3;
-                param.leftMargin = 3;
-                param.topMargin = 3;
-                param.bottomMargin = 3;
+                param.rightMargin = getScreenWidthInPixels()/column/50;
+                param.leftMargin = getScreenWidthInPixels()/column/50;
+                param.topMargin = getScreenWidthInPixels()/column/50;
+                param.bottomMargin = getScreenWidthInPixels()/column/50;
+                param.width = (getScreenWidthInPixels()/column)-(2*param.rightMargin);
+                param.height = (getScreenWidthInPixels()/column)-(2*param.rightMargin);
                 param.setGravity(Gravity.CENTER);
                 param.columnSpec = android.widget.GridLayout.spec(y);
                 param.rowSpec = android.widget.GridLayout.spec(x);
+
                 textView.setLayoutParams(param);
                 textView.setBackgroundColor(Color.BLUE);
                 textView.setGravity(Gravity.CENTER);
-                //textView.setOnClickListener(this);
+                textView.setOnClickListener(this);
+                String id = Integer.toString(x)+Integer.toString(y);
+                textView.setId(Integer.parseInt(id));
 
                 myGrid.addView(textView);
             }
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        TextView textView = (TextView)findViewById(getResources().getIdentifier(Integer.toString(v.getId()),"id",getPackageName()));
+        textView.setText("Id: " + Integer.toString(v.getId()));
+        textView.setTextColor(Color.WHITE);
+
     }
 }
