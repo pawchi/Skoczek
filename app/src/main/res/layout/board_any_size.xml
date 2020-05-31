@@ -28,7 +28,7 @@
                 android:id="@+id/buttonCreateBoard"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Create board" />
+                android:text="Stwórz planszę" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
                     <TextView
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="Columns: "
+                        android:text="Kolumny: "
                         android:textSize="18sp" />
                     <EditText
                         android:id="@+id/textSetColumns"
@@ -62,7 +62,7 @@
                     <TextView
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="Rows: "
+                        android:text="Wiersze: "
                         android:textSize="18sp" />
                     <EditText
                         android:id="@+id/textSetRows"

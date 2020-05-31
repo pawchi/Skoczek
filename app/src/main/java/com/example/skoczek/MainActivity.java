@@ -17,7 +17,6 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,15 +32,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int COLOR_CLICKED = Color.GREEN;
     public static final int COLOR_NOT_CLICKED = Color.BLUE;
 
-    public static final String SHARED_PREFS = "sharedPrefs";
-    public static final String TEXT = "test";
+    public static final String SHARED_PREFS_POOL_1 = "sharedPrefs";
+    public static final String SHR_POOL_1_KEY1 = "test";
 
     Map<Integer,Skoczek2_Field> board = new HashMap<>();
     public ArrayList<ArrayList<Integer>> arrayMoves = new ArrayList<>();
     public int countResult = 0;
-    public TextView showBestResult;
+    public TextView showCurrentResult;
     public TextView bestResultEver;
-    public int bestScore = 0;
 
     GridLayout gridLayout;
 
@@ -51,11 +49,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.skoczek_main);
 
         Button buttonCreateBoard = (Button) findViewById(R.id.createBoard);
+        Button buttonResetBoard = (Button) findViewById(R.id.resetBoard);
 
         buttonCreateBoard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),BoardAnySize.class));
+            }
+        });
+
+        buttonResetBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
             }
         });
 
@@ -65,8 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int widthInDP = Math.round(dm.widthPixels/dm.density);
 
 
-
-        showBestResult = (TextView) findViewById(R.id.textBestCurrentResult);
+        showCurrentResult = (TextView) findViewById(R.id.textBestCurrentResult);
         bestResultEver = (TextView) findViewById(R.id.textBestResultEver);
         loadSharedPrefs(); //load best ever user score
         setListWithPossibleMoves();
@@ -99,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             textView.setBackgroundColor(COLOR_NOT_CLICKED);
             textView.setGravity(Gravity.CENTER);
             textView.setOnClickListener(this);
-            //textView.setText(Integer.toString(i+1));
             textView.setId(i+1);
             gridLayout.addView(textView);
         }
@@ -108,10 +114,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Skoczek2_Field field = new Skoczek2_Field(NOT_CLICKED,new ArrayList<Integer>(arrayMoves.get(i)));
             board.put(i,field);
         }
-
-        //int childWidth = gridLayout.getChildAt(0).getLayoutParams().width;
-        //Toast.makeText(this, "Child width = " + childWidth, Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
@@ -130,9 +132,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             removeFieldFromPossibleMoves(viewCell);
             countResult =1;
             textView.setText(Integer.toString(countResult));
-            if(Integer.parseInt(showBestResult.getText().toString())>= bestScore){
-                showBestResult.setText(Integer.toString(countResult));
-            }
+            showCurrentResult.setText(Integer.toString(countResult));
+
         } else {
             if ( board.get(boardField).getFieldStatus()==NOT_CLICKED && itemColor.getColor()==COLOR_MOVE_POSSIBLE){ //
                 setWholeBoardColors(v);
@@ -142,36 +143,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 v.setBackgroundColor(Color.GREEN); //TEMPORARY
                 showAndSetPossibleMoves(v); //TEMPORARY
                 removeFieldFromPossibleMoves(viewCell);
-
-                if(Integer.parseInt(showBestResult.getText().toString())>= bestScore){
-                    showBestResult.setText(Integer.toString(countResult));
-                }
+                showCurrentResult.setText(Integer.toString(countResult));
             }
         }
-
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         saveSharedPrefs();
     }
 
+
     public void saveSharedPrefs(){
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS_POOL_1, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (bestScore==0){
-            editor.putString(TEXT, Integer.toString(countResult));
-        }
-        if (bestScore<countResult){
-            editor.putString(TEXT, Integer.toString(countResult));
+
+        if (Integer.parseInt(bestResultEver.getText().toString())<countResult){
+            editor.putString(SHR_POOL_1_KEY1, Integer.toString(countResult));
         }
         editor.apply();
     }
 
     public void loadSharedPrefs(){
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        bestResultEver.setText(sharedPreferences.getString(TEXT,"0"));
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS_POOL_1, MODE_PRIVATE);
+        bestResultEver.setText(sharedPreferences.getString(SHR_POOL_1_KEY1,"0"));
+        Toast.makeText(this, "Shared pref: "+sharedPreferences.getString(SHR_POOL_1_KEY1,"0"), Toast.LENGTH_SHORT).show();
     }
 
     private void showAndSetPossibleMoves(View view) {

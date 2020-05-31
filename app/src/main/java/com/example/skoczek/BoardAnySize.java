@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
@@ -44,57 +45,76 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
         });
 
 
-
     }
 
     private void makeInputLimit(EditText editText, int min, int max) {
         editText.setFilters(new InputFilter[]{new InputFilterMinMax(min, max)});
     }
 
-    public int getScreenWidthInPixels(){
+    public int getScreenWidthInPixels() {
         DisplayMetrics dm = new DisplayMetrics();
-        WindowManager windowManager = (WindowManager)getApplicationContext().getSystemService(WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(dm);
         return dm.widthPixels;
     }
 
-    public void createGridLayout(GridLayout myGrid){
-        int column = Integer.parseInt(getColumns.getText().toString());
-        int row = Integer.parseInt(getRows.getText().toString());
-        myGrid.setColumnCount(column);
-        myGrid.setRowCount(row);
+    public int getScreenHeightInPixels() {
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(dm);
+        return dm.heightPixels;
+    }
 
-        for (int x =1; x<row+1; x++){
-            for (int y=1; y<column+1; y++) {
+    public void createGridLayout(GridLayout myGrid) {
+        if (getColumns.getText().toString().equals("") || getRows.getText().toString().equals("")) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Zły wymiar planszy")
+                    .setMessage("Musisz podać obydwa wymiary planszy z przedziału od 2 do 9. Wierszy nie może być więcej niż kolumn.")
+                    .show();
+        } else if (Integer.parseInt(getColumns.getText().toString()) < Integer.parseInt(getRows.getText().toString())) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Zły wymiar planszy")
+                    .setMessage("Wierszy nie może być więcej niż kolumn.")
+                    .show();
+        } else {
 
-                TextView textView = new TextView(this);
-                android.widget.GridLayout.LayoutParams param = new android.widget.GridLayout.LayoutParams();
+            int column = Integer.parseInt(getColumns.getText().toString());
+            int row = Integer.parseInt(getRows.getText().toString());
+            myGrid.setColumnCount(column);
+            myGrid.setRowCount(row);
 
-                param.rightMargin = getScreenWidthInPixels()/column/50;
-                param.leftMargin = getScreenWidthInPixels()/column/50;
-                param.topMargin = getScreenWidthInPixels()/column/50;
-                param.bottomMargin = getScreenWidthInPixels()/column/50;
-                param.width = (getScreenWidthInPixels()/column)-(2*param.rightMargin);
-                param.height = (getScreenWidthInPixels()/column)-(2*param.rightMargin);
-                param.setGravity(Gravity.CENTER);
-                param.columnSpec = android.widget.GridLayout.spec(y);
-                param.rowSpec = android.widget.GridLayout.spec(x);
+            for (int x = 1; x < row + 1; x++) {
+                for (int y = 1; y < column + 1; y++) {
 
-                textView.setLayoutParams(param);
-                textView.setBackgroundColor(Color.BLUE);
-                textView.setGravity(Gravity.CENTER);
-                textView.setOnClickListener(this);
-                String id = Integer.toString(x)+Integer.toString(y);
-                textView.setId(Integer.parseInt(id));
+                    TextView textView = new TextView(this);
+                    android.widget.GridLayout.LayoutParams param = new android.widget.GridLayout.LayoutParams();
 
-                myGrid.addView(textView);
+                    param.rightMargin = getScreenWidthInPixels() / column / 50;
+                    param.leftMargin = getScreenWidthInPixels() / column / 50;
+                    param.topMargin = getScreenWidthInPixels() / column / 50;
+                    param.bottomMargin = getScreenWidthInPixels() / column / 50;
+                    param.width = (getScreenWidthInPixels() / column) - (2 * param.rightMargin);
+                    param.height = (getScreenWidthInPixels() / column) - (2 * param.rightMargin);
+                    param.setGravity(Gravity.CENTER);
+                    param.columnSpec = android.widget.GridLayout.spec(y);
+                    param.rowSpec = android.widget.GridLayout.spec(x);
+
+                    textView.setLayoutParams(param);
+                    textView.setBackgroundColor(Color.BLUE);
+                    textView.setGravity(Gravity.CENTER);
+                    textView.setOnClickListener(this);
+                    String id = Integer.toString(x) + Integer.toString(y);
+                    textView.setId(Integer.parseInt(id));
+
+                    myGrid.addView(textView);
+                }
             }
         }
     }
 
     @Override
     public void onClick(View v) {
-        TextView textView = (TextView)findViewById(getResources().getIdentifier(Integer.toString(v.getId()),"id",getPackageName()));
+        TextView textView = (TextView) findViewById(getResources().getIdentifier(Integer.toString(v.getId()), "id", getPackageName()));
         textView.setText("Id: " + Integer.toString(v.getId()));
         textView.setTextColor(Color.WHITE);
 
