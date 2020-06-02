@@ -18,9 +18,19 @@ import androidx.gridlayout.widget.GridLayout;
 
 public class BoardAnySize extends AppCompatActivity implements View.OnClickListener {
 
+    public static final int NOT_CLICKED = 0;
+    public static final int CLICKED = 1;
+    public static final int MOVE_POSSIBLE = 2;
+
+    public static final int COLOR_MOVE_POSSIBLE = Color.MAGENTA;
+    public static final int COLOR_CLICKED = Color.GREEN;
+    public static final int COLOR_NOT_CLICKED = Color.BLUE;
+
     GridLayout gridLayoutAnySize;
     Button createBoard;
     EditText getColumns, getRows;
+    int column = 0;
+    int row = 0;
 
 
     @Override
@@ -78,8 +88,8 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
                     .show();
         } else {
 
-            int column = Integer.parseInt(getColumns.getText().toString());
-            int row = Integer.parseInt(getRows.getText().toString());
+            column = Integer.parseInt(getColumns.getText().toString());
+            row = Integer.parseInt(getRows.getText().toString());
             myGrid.setColumnCount(column);
             myGrid.setRowCount(row);
 
@@ -100,7 +110,7 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
                     param.rowSpec = android.widget.GridLayout.spec(x);
 
                     textView.setLayoutParams(param);
-                    textView.setBackgroundColor(Color.BLUE);
+                    textView.setBackgroundColor(COLOR_NOT_CLICKED);
                     textView.setGravity(Gravity.CENTER);
                     textView.setOnClickListener(this);
                     String id = Integer.toString(x) + Integer.toString(y);
@@ -115,8 +125,49 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         TextView textView = (TextView) findViewById(getResources().getIdentifier(Integer.toString(v.getId()), "id", getPackageName()));
-        textView.setText("Id: " + Integer.toString(v.getId()));
+        String id = String.valueOf(v.getId());
+        int posX = Integer.parseInt(id.substring(0,1));
+        int posY = Integer.parseInt(id.substring(1,2));
+
+        showPossibleMoves(v, posX, posY, textView);
+        //textView.setText("Id: " + Integer.toString(v.getId()));
+
         textView.setTextColor(Color.WHITE);
 
+//        if (isMovePossible(v)){
+//
+//        }
+
+
     }
+
+    public void showPossibleMoves(View v, int posX, int posY, TextView textView){
+        //Possible move 1
+        if (posX+1<=column && posY+2<=row){
+            String idX = Integer.toString(posX+1);
+            String idY = Integer.toString(posY+2);
+            String idXY = idX+idY;
+            TextView move1 = (TextView) findViewById(getResources().getIdentifier(idXY,"id", getPackageName()));
+            move1.setBackgroundColor(COLOR_MOVE_POSSIBLE);
+        }
+
+        //Possible move 2
+        if (posX+2<=column && posY+1<=row){
+            String idX = Integer.toString(posX+2);
+            String idY = Integer.toString(posY+1);
+            String idXY = idX+idY;
+            TextView move1 = (TextView) findViewById(getResources().getIdentifier(idXY,"id", getPackageName()));
+            move1.setBackgroundColor(COLOR_MOVE_POSSIBLE);
+        }
+    }
+
+    public boolean isMovePossible(View v){
+        String id = String.valueOf(v.getId());
+        int posX = Integer.parseInt(id.substring(0,1));
+        int posY = Integer.parseInt(id.substring(1,2));
+
+        return true;
+    }
+
+
 }
