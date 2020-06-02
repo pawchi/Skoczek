@@ -168,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void loadSharedPrefs(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS_POOL_1, MODE_PRIVATE);
         bestResultEver.setText(sharedPreferences.getString(SHR_POOL_1_KEY1,"0"));
-        Toast.makeText(this, "Shared pref: "+sharedPreferences.getString(SHR_POOL_1_KEY1,"0"), Toast.LENGTH_SHORT).show();
     }
 
     private void showAndSetPossibleMoves(View view) {

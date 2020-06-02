@@ -1,6 +1,7 @@
 package com.example.skoczek;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.DisplayMetrics;
@@ -18,10 +19,6 @@ import androidx.gridlayout.widget.GridLayout;
 
 public class BoardAnySize extends AppCompatActivity implements View.OnClickListener {
 
-    public static final int NOT_CLICKED = 0;
-    public static final int CLICKED = 1;
-    public static final int MOVE_POSSIBLE = 2;
-
     public static final int COLOR_MOVE_POSSIBLE = Color.MAGENTA;
     public static final int COLOR_CLICKED = Color.GREEN;
     public static final int COLOR_NOT_CLICKED = Color.BLUE;
@@ -29,6 +26,7 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
     GridLayout gridLayoutAnySize;
     Button createBoard;
     EditText getColumns, getRows;
+    int countResult = 0;
     int column = 0;
     int row = 0;
 
@@ -124,47 +122,81 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        TextView textView = (TextView) findViewById(getResources().getIdentifier(Integer.toString(v.getId()), "id", getPackageName()));
+        TextView field = (TextView) findViewById(getResources().getIdentifier(Integer.toString(v.getId()), "id", getPackageName()));
+        ColorDrawable itemColor = (ColorDrawable) v.getBackground();
         String id = String.valueOf(v.getId());
-        int posX = Integer.parseInt(id.substring(0,1));
-        int posY = Integer.parseInt(id.substring(1,2));
+        int posX = Integer.parseInt(id.substring(0, 1));
+        int posY = Integer.parseInt(id.substring(1, 2));
 
-        showPossibleMoves(v, posX, posY, textView);
-        //textView.setText("Id: " + Integer.toString(v.getId()));
-
-        textView.setTextColor(Color.WHITE);
-
-//        if (isMovePossible(v)){
-//
-//        }
+        if (itemColor.getColor() == COLOR_NOT_CLICKED && countResult == 0) {
+            showPossibleMoves(posX, posY);
+            field.setBackgroundColor(COLOR_CLICKED);
+            countResult++;
+        }
+        if (itemColor.getColor() == COLOR_MOVE_POSSIBLE) {
+            field.setBackgroundColor(COLOR_CLICKED);
+            cancelOldMovesPossible();
+            countResult++;
+            showPossibleMoves(posX, posY);
+        }
 
 
     }
 
-    public void showPossibleMoves(View v, int posX, int posY, TextView textView){
-        //Possible move 1
-        if (posX+1<=column && posY+2<=row){
-            String idX = Integer.toString(posX+1);
-            String idY = Integer.toString(posY+2);
-            String idXY = idX+idY;
-            TextView move1 = (TextView) findViewById(getResources().getIdentifier(idXY,"id", getPackageName()));
-            move1.setBackgroundColor(COLOR_MOVE_POSSIBLE);
-        }
+    public void cancelOldMovesPossible() {
 
-        //Possible move 2
-        if (posX+2<=column && posY+1<=row){
-            String idX = Integer.toString(posX+2);
-            String idY = Integer.toString(posY+1);
-            String idXY = idX+idY;
-            TextView move1 = (TextView) findViewById(getResources().getIdentifier(idXY,"id", getPackageName()));
-            move1.setBackgroundColor(COLOR_MOVE_POSSIBLE);
+        for (int i = 0; i < gridLayoutAnySize.getChildCount(); i++) {
+            View child = gridLayoutAnySize.getChildAt(i);
+            ColorDrawable childBackground = (ColorDrawable) child.getBackground();
+            if (childBackground.getColor() != COLOR_CLICKED) {
+                child.setBackgroundColor(COLOR_NOT_CLICKED);
+            }
         }
     }
 
-    public boolean isMovePossible(View v){
+    public void showPossibleMoves(int posX, int posY) {
+        if (posX + 1 <= column && posY + 2 <= row) {
+            setColorPossibleMove(posX + 1, posY + 2);
+        }
+        if (posX + 2 <= column && posY + 1 <= row) {
+            setColorPossibleMove(posX + 2, posY + 1);
+        }
+        if (posX - 1 >= 1 && posY + 2 <= row) {
+            setColorPossibleMove(posX - 1, posY + 2);
+        }
+        if (posX - 2 >= 1 && posY + 1 <= row) {
+            setColorPossibleMove(posX - 2, posY + 1);
+        }
+        if (posX + 1 <= column && posY - 2 >= 1) {
+            setColorPossibleMove(posX + 1, posY - 2);
+        }
+        if (posX + 2 <= column && posY - 1 >= 1) {
+            setColorPossibleMove(posX + 2, posY - 1);
+        }
+        if (posX - 1 >= 1 && posY - 2 >= 1) {
+            setColorPossibleMove(posX - 1, posY - 2);
+        }
+        if (posX - 2 >= 1 && posY - 1 >= 1) {
+            setColorPossibleMove(posX - 2, posY - 1);
+        }
+    }
+
+    public void setColorPossibleMove(int x, int y) {
+        String idX = Integer.toString(x);
+        String idY = Integer.toString(y);
+        String idXY = idX + idY;
+        TextView field = (TextView) findViewById(getResources().getIdentifier(idXY, "id", getPackageName()));
+        ColorDrawable fieldColor = (ColorDrawable) field.getBackground();
+        if (fieldColor.getColor()!=COLOR_CLICKED){
+            field.setBackgroundColor(COLOR_MOVE_POSSIBLE);
+        }
+
+    }
+
+    public boolean isMovePossible(View v) {
         String id = String.valueOf(v.getId());
-        int posX = Integer.parseInt(id.substring(0,1));
-        int posY = Integer.parseInt(id.substring(1,2));
+        int posX = Integer.parseInt(id.substring(0, 1));
+        int posY = Integer.parseInt(id.substring(1, 2));
 
         return true;
     }
