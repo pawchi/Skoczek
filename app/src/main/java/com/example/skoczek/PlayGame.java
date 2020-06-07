@@ -1,5 +1,6 @@
 package com.example.skoczek;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -17,40 +18,40 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
-public class BoardAnySize extends AppCompatActivity implements View.OnClickListener {
+public class PlayGame extends AppCompatActivity implements View.OnClickListener {
 
     public static final int COLOR_MOVE_POSSIBLE = Color.MAGENTA;
     public static final int COLOR_CLICKED = Color.GREEN;
+    public static final int COLOR_CLICKED_TEMP = Color.parseColor("#fff400");
     public static final int COLOR_NOT_CLICKED = Color.BLUE;
+
+    public static final String SHARED_PREFS_POOL = "anySizePrefs";
+    public static String SHARED_PREFS_CURRENT_KEY;
 
     GridLayout gridLayoutAnySize;
     Button createBoard;
     EditText getColumns, getRows;
-    int countResult = 0;
-    int column = 0;
-    int row = 0;
+    int currentResult = 0;
+    int bestResultEver = 0;
+    int column = 5;
+    int row = 5;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.board_any_size);
+        setContentView(R.layout.play_game);
 
         gridLayoutAnySize = findViewById(R.id.gridLayoutAnySize);
         gridLayoutAnySize.removeAllViews();
 
-        getColumns = findViewById(R.id.textSetColumns);
-        makeInputLimit(getColumns, 2, 9);
-        getRows = findViewById(R.id.textSetRows);
-        makeInputLimit(getRows, 2, 9);
+//        getColumns = findViewById(R.id.textSetColumns);
+//        makeInputLimit(getColumns, 2, 9);
+//        getRows = findViewById(R.id.textSetRows);
+//        makeInputLimit(getRows, 2, 9);
 
-        createBoard = findViewById(R.id.buttonCreateBoard);
-        createBoard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createGridLayout(gridLayoutAnySize);
-            }
-        });
+        createGridLayout(gridLayoutAnySize);
+
 
 
     }
@@ -74,20 +75,7 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
     }
 
     public void createGridLayout(GridLayout myGrid) {
-        if (getColumns.getText().toString().equals("") || getRows.getText().toString().equals("")) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Zły wymiar planszy")
-                    .setMessage("Musisz podać obydwa wymiary planszy z przedziału od 2 do 9. Wierszy nie może być więcej niż kolumn.")
-                    .show();
-        } else if (Integer.parseInt(getColumns.getText().toString()) < Integer.parseInt(getRows.getText().toString())) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Zły wymiar planszy")
-                    .setMessage("Wierszy nie może być więcej niż kolumn.")
-                    .show();
-        } else {
 
-            column = Integer.parseInt(getColumns.getText().toString());
-            row = Integer.parseInt(getRows.getText().toString());
             myGrid.setColumnCount(column);
             myGrid.setRowCount(row);
 
@@ -115,7 +103,7 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
                     textView.setId(Integer.parseInt(id));
 
                     myGrid.addView(textView);
-                }
+
             }
         }
     }
@@ -128,15 +116,18 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
         int posX = Integer.parseInt(id.substring(0, 1));
         int posY = Integer.parseInt(id.substring(1, 2));
 
-        if (itemColor.getColor() == COLOR_NOT_CLICKED && countResult == 0) {
+
+        if (itemColor.getColor() == COLOR_NOT_CLICKED && currentResult == 0) {
             showPossibleMoves(posX, posY);
-            field.setBackgroundColor(COLOR_CLICKED);
-            countResult++;
+            field.setBackgroundColor(COLOR_CLICKED_TEMP);
+            currentResult++;
+            field.setText(Integer.toString(currentResult));
         }
         if (itemColor.getColor() == COLOR_MOVE_POSSIBLE) {
-            field.setBackgroundColor(COLOR_CLICKED);
             cancelOldMovesPossible();
-            countResult++;
+            field.setBackgroundColor(COLOR_CLICKED_TEMP);
+            currentResult++;
+            field.setText(Integer.toString(currentResult));
             showPossibleMoves(posX, posY);
         }
 
@@ -148,6 +139,9 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < gridLayoutAnySize.getChildCount(); i++) {
             View child = gridLayoutAnySize.getChildAt(i);
             ColorDrawable childBackground = (ColorDrawable) child.getBackground();
+            if (childBackground.getColor()==COLOR_CLICKED_TEMP){
+                child.setBackgroundColor(COLOR_CLICKED);
+            }
             if (childBackground.getColor() != COLOR_CLICKED) {
                 child.setBackgroundColor(COLOR_NOT_CLICKED);
             }
@@ -155,22 +149,22 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
     }
 
     public void showPossibleMoves(int posX, int posY) {
-        if (posX + 1 <= column && posY + 2 <= row) {
+        if (posX + 1 <= row && posY + 2 <= column) {
             setColorPossibleMove(posX + 1, posY + 2);
         }
-        if (posX + 2 <= column && posY + 1 <= row) {
+        if (posX + 2 <= row && posY + 1 <= column) {
             setColorPossibleMove(posX + 2, posY + 1);
         }
-        if (posX - 1 >= 1 && posY + 2 <= row) {
+        if (posX - 1 >= 1 && posY + 2 <= column) {
             setColorPossibleMove(posX - 1, posY + 2);
         }
-        if (posX - 2 >= 1 && posY + 1 <= row) {
+        if (posX - 2 >= 1 && posY + 1 <= column) {
             setColorPossibleMove(posX - 2, posY + 1);
         }
-        if (posX + 1 <= column && posY - 2 >= 1) {
+        if (posX + 1 <= row && posY - 2 >= 1) {
             setColorPossibleMove(posX + 1, posY - 2);
         }
-        if (posX + 2 <= column && posY - 1 >= 1) {
+        if (posX + 2 <= row && posY - 1 >= 1) {
             setColorPossibleMove(posX + 2, posY - 1);
         }
         if (posX - 1 >= 1 && posY - 2 >= 1) {
@@ -193,12 +187,26 @@ public class BoardAnySize extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public boolean isMovePossible(View v) {
-        String id = String.valueOf(v.getId());
-        int posX = Integer.parseInt(id.substring(0, 1));
-        int posY = Integer.parseInt(id.substring(1, 2));
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveSharedPrefs();
+    }
 
-        return true;
+
+    public void saveSharedPrefs(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS_POOL, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (bestResultEver<currentResult){
+            //editor.putString(SHR_POOL_1_KEY1, Integer.toString(countResult));
+        }
+        editor.apply();
+    }
+
+    public void loadSharedPrefs(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS_POOL, MODE_PRIVATE);
+        bestResultEver = Integer.parseInt(sharedPreferences.getString(SHARED_PREFS_CURRENT_KEY,"0"));
     }
 
 

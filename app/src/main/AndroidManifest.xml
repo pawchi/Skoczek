@@ -18,7 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BoardAnySize"/>
+        <activity android:name=".CreateBoardAnySize"/>
+        <activity android:name=".PlayGame"/>
     </application>
 
 </manifest>
