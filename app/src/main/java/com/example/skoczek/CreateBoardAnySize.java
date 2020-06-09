@@ -30,7 +30,12 @@ public class CreateBoardAnySize extends AppCompatActivity {
         createBoard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), PlayGame.class));
+                Intent intent = new Intent(getApplicationContext(), PlayGame.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("columns", Integer.parseInt(getColumns.getText().toString()));
+                bundle.putInt("rows", Integer.parseInt(getRows.getText().toString()));
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 

@@ -1,5 +1,6 @@
 package com.example.skoczek;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,6 +19,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
+import java.util.Locale;
+
 public class PlayGame extends AppCompatActivity implements View.OnClickListener {
 
     public static final int COLOR_MOVE_POSSIBLE = Color.MAGENTA;
@@ -29,12 +32,11 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
     public static String SHARED_PREFS_CURRENT_KEY;
 
     GridLayout gridLayoutAnySize;
-    Button createBoard;
-    EditText getColumns, getRows;
+    TextView result, bestResult;
     int currentResult = 0;
     int bestResultEver = 0;
-    int column = 5;
-    int row = 5;
+    int column;
+    int row;
 
 
     @Override
@@ -42,23 +44,21 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_game);
 
+        result = findViewById(R.id.textBestCurrentResultAnySize);
+        bestResult = findViewById(R.id.textBestResultEverAnySize);
+
         gridLayoutAnySize = findViewById(R.id.gridLayoutAnySize);
         gridLayoutAnySize.removeAllViews();
 
-//        getColumns = findViewById(R.id.textSetColumns);
-//        makeInputLimit(getColumns, 2, 9);
-//        getRows = findViewById(R.id.textSetRows);
-//        makeInputLimit(getRows, 2, 9);
-
+        Bundle bundle = getIntent().getExtras();
+        if (bundle!=null){
+            column = bundle.getInt("columns");
+            row = bundle.getInt("rows");
+        }
         createGridLayout(gridLayoutAnySize);
 
-
-
     }
 
-    private void makeInputLimit(EditText editText, int min, int max) {
-        editText.setFilters(new InputFilter[]{new InputFilterMinMax(min, max)});
-    }
 
     public int getScreenWidthInPixels() {
         DisplayMetrics dm = new DisplayMetrics();
@@ -116,12 +116,12 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         int posX = Integer.parseInt(id.substring(0, 1));
         int posY = Integer.parseInt(id.substring(1, 2));
 
-
         if (itemColor.getColor() == COLOR_NOT_CLICKED && currentResult == 0) {
             showPossibleMoves(posX, posY);
             field.setBackgroundColor(COLOR_CLICKED_TEMP);
             currentResult++;
             field.setText(Integer.toString(currentResult));
+            result.setText(Integer.toString(currentResult));
         }
         if (itemColor.getColor() == COLOR_MOVE_POSSIBLE) {
             cancelOldMovesPossible();
@@ -129,9 +129,8 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
             currentResult++;
             field.setText(Integer.toString(currentResult));
             showPossibleMoves(posX, posY);
+            result.setText(String.format(Locale.getDefault(), "%d", currentResult));
         }
-
-
     }
 
     public void cancelOldMovesPossible() {
@@ -184,7 +183,6 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         if (fieldColor.getColor()!=COLOR_CLICKED){
             field.setBackgroundColor(COLOR_MOVE_POSSIBLE);
         }
-
     }
 
     @Override
