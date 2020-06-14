@@ -1,21 +1,16 @@
 package com.example.skoczek;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
@@ -32,11 +27,12 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
     public static String SHARED_PREFS_CURRENT_KEY;
 
     GridLayout gridLayoutAnySize;
-    TextView result, bestResult;
+    TextView result, bestResult, currentBoardSize;
     int currentResult = 0;
     int bestResultEver = 0;
     int column;
     int row;
+    String currentBoard_KEY;
 
 
     @Override
@@ -46,6 +42,7 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
 
         result = findViewById(R.id.textBestCurrentResultAnySize);
         bestResult = findViewById(R.id.textBestResultEverAnySize);
+        currentBoardSize = findViewById(R.id.textCurrantBoardSize);
 
         gridLayoutAnySize = findViewById(R.id.gridLayoutAnySize);
         gridLayoutAnySize.removeAllViews();
@@ -54,7 +51,11 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         if (bundle!=null){
             column = bundle.getInt("columns");
             row = bundle.getInt("rows");
+            currentBoard_KEY = Integer.toString(column) + Integer.toString(row);
         }
+        currentBoardSize.setText(Integer.toString(column)+ " x " + Integer.toString(row));
+        loadSharedPrefs();
+        bestResult.setText(Integer.toString(bestResultEver));
         createGridLayout(gridLayoutAnySize);
 
     }
@@ -197,14 +198,14 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if (bestResultEver<currentResult){
-            //editor.putString(SHR_POOL_1_KEY1, Integer.toString(countResult));
+            editor.putString(currentBoard_KEY, Integer.toString(currentResult));
         }
         editor.apply();
     }
 
     public void loadSharedPrefs(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS_POOL, MODE_PRIVATE);
-        bestResultEver = Integer.parseInt(sharedPreferences.getString(SHARED_PREFS_CURRENT_KEY,"0"));
+        bestResultEver = Integer.parseInt(sharedPreferences.getString(currentBoard_KEY,"0"));
     }
 
 
