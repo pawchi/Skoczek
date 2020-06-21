@@ -1,5 +1,6 @@
 package com.example.skoczek;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -8,6 +9,8 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -33,12 +36,25 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
     int column;
     int row;
     String currentBoard_KEY;
+    ImageView backButton;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_game);
+
+        LinearLayout layoutToInjectXmlUpBar = findViewById(R.id.layout_up_bar_playgame);
+        getLayoutInflater().inflate(R.layout.fragment_up_bar, layoutToInjectXmlUpBar);
+
+        backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), CreateBoardAnySize.class));
+                finish();
+            }
+        });
 
         result = findViewById(R.id.textBestCurrentResultAnySize);
         bestResult = findViewById(R.id.textBestResultEverAnySize);
@@ -51,7 +67,7 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         if (bundle!=null){
             column = bundle.getInt("columns");
             row = bundle.getInt("rows");
-            currentBoard_KEY = Integer.toString(column) + Integer.toString(row);
+            currentBoard_KEY = Integer.toString(column)+ " x " + Integer.toString(row);
         }
         currentBoardSize.setText(Integer.toString(column)+ " x " + Integer.toString(row));
         loadSharedPrefs();

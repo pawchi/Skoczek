@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:columnCount="3"
+    android:useDefaultMargins="true"
+    app:layout_rowWeight="1"
+    app:layout_columnWeight="1">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/corners_bg"
+            android:backgroundTint="@color/colorPrimary"
+            android:padding="10dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Best result: "
+                android:textAlignment="center" />
+                <TextView
+                    android:id="@+id/textViewBestScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12"
+                    android:textAlignment="center" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="/16"
+                    android:textAlignment="center" />
+        </LinearLayout>
+            <TextView
+                android:id="@+id/textViewBoardSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4 x 4"
+                android:textAlignment="center"
+                android:textSize="50sp"/>
+    </LinearLayout>
+
+
+
+</GridLayout>

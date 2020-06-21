@@ -4,12 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_gravity="center_horizontal|center_vertical"
-    android:gravity="center_horizontal|center_vertical"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     app:layout_gravity="center_horizontal"
-    tools:context=".CreateBoardAnySize">
+    tools:context=".CreateBoardAnySize"
+    android:background="#102a6f">
+    <LinearLayout
+        android:id="@+id/layout_up_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="center">
+        <GridLayout
+            android:id="@+id/startPageGridLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:useDefaultMargins="true">
+        </GridLayout>
+    </LinearLayout>
 
+
+<!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -302,6 +324,6 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
+-->
 
 </LinearLayout>
