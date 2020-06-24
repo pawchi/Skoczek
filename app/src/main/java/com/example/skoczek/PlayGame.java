@@ -113,12 +113,20 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
                     TextView textView = new TextView(this);
                     android.widget.GridLayout.LayoutParams param = new android.widget.GridLayout.LayoutParams();
 
-                    param.rightMargin = getScreenWidthInPixels() / column / 50;
-                    param.leftMargin = getScreenWidthInPixels() / column / 50;
-                    param.topMargin = getScreenWidthInPixels() / column / 50;
-                    param.bottomMargin = getScreenWidthInPixels() / column / 50;
-                    param.width = (getScreenWidthInPixels() / column) - (2 * param.rightMargin);
-                    param.height = (getScreenWidthInPixels() / column) - (2 * param.rightMargin);
+                    int margin = getScreenWidthInPixels() / column / 50;
+                    int width = (getScreenWidthInPixels() / column) - (2 * margin);
+                    int height = (getScreenWidthInPixels() / column) - (2 * margin);
+                    if (height*row>getScreenHeightInPixels()-(3*width)){
+                        height= (getScreenHeightInPixels()-(2*width)-width/3)/row - (2 * margin);
+                    }
+
+
+                    param.rightMargin = margin;
+                    param.leftMargin = margin;
+                    param.topMargin = margin;
+                    param.bottomMargin = margin;
+                    param.width = width;
+                    param.height = height;
                     param.setGravity(Gravity.CENTER);
                     param.columnSpec = android.widget.GridLayout.spec(y);
                     param.rowSpec = android.widget.GridLayout.spec(x);
