@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -38,6 +39,14 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
     String currentBoard_KEY;
     ImageView backButton;
 
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK){
+            startActivity(new Intent(getApplicationContext(), CreateBoardAnySize.class));
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +82,8 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         loadSharedPrefs();
         bestResult.setText(Integer.toString(bestResultEver));
         createGridLayout(gridLayoutAnySize);
+
+
 
     }
 

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_gravity="center_horizontal"
     app:layout_gravity="center"
-    >
+    android:background="#cef1f2">
     <LinearLayout
         android:id="@+id/layout_up_bar_playgame"
         android:layout_width="wrap_content"
@@ -72,7 +72,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:layout_gravity="center_horizontal"
@@ -94,18 +93,28 @@
             android:textSize="22sp" />
     </LinearLayout>
 
-
-
-    <androidx.gridlayout.widget.GridLayout
-        android:id="@+id/gridLayoutAnySize"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
         android:layout_gravity="center"
         android:foregroundGravity="center"
         >
 
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/gridLayoutAnySize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:foregroundGravity="center"
+            >
+        </androidx.gridlayout.widget.GridLayout>
+    </LinearLayout>
 
-    </androidx.gridlayout.widget.GridLayout>
+
+
+
 
 
 

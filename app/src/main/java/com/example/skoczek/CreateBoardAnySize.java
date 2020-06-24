@@ -1,21 +1,14 @@
 package com.example.skoczek;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,8 +21,6 @@ import java.util.Arrays;
 
 public class CreateBoardAnySize extends AppCompatActivity {
 
-    Button createBoard;
-    EditText getColumns, getRows;
     GridLayout menuGridLayout;
     int screenWidth;
     int screenHeight;
@@ -52,42 +43,19 @@ public class CreateBoardAnySize extends AppCompatActivity {
         LinearLayout layoutToInjectXmlUpBar = findViewById(R.id.layout_up_bar);
         getLayoutInflater().inflate(R.layout.fragment_up_bar, layoutToInjectXmlUpBar);
 
-
         menuGridLayout = findViewById(R.id.startPageGridLayout);
         screenWidth = getScreenWidthInPixels();
         screenHeight = getScreenHeightInPixels();
 
         createMenuItems();
-        //loadSharedPrefs();
-        //setAllBestResults();
-
-//        getColumns = findViewById(R.id.textSetColumns);
-//        makeInputLimit(getColumns, 2, 9);
-//        getRows = findViewById(R.id.textSetRows);
-//        makeInputLimit(getRows, 2, 9);
-//
-//        createBoard = findViewById(R.id.buttonCreateBoard);
-//        createBoard.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getApplicationContext(), PlayGame.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putInt("columns", Integer.parseInt(getColumns.getText().toString()));
-//                bundle.putInt("rows", Integer.parseInt(getRows.getText().toString()));
-//                intent.putExtras(bundle);
-//                startActivity(intent);
-//            }
-//        });
-
-
     }
 
     private void createMenuItems() {
         int loopPos = 0;
         int itemMarginWidth = 30;
         int screenMarginWidth = 20;
-        int itemWidth = ((screenWidth-screenMarginWidth)/3)-itemMarginWidth;
-        int itemHeight = (screenHeight/5)-70;
+        int itemWidth = ((screenWidth - screenMarginWidth) / 3) - itemMarginWidth;
+        int itemHeight = (screenHeight / 5) - 70;
 
 
         for (final BoardInfo boardInfo : boardInfosList) {
@@ -125,7 +93,6 @@ public class CreateBoardAnySize extends AppCompatActivity {
             String randomColor = colors.get(loopPos);
             loopPos++;
             mainLinLay.getBackground().setTint(Color.parseColor(randomColor));
-            //mainLinLay.setPadding(25, 25, 25, 25);
             mainLinLay.setLayoutParams(params);
 
             TextView boardSize = new TextView(this);
@@ -141,16 +108,14 @@ public class CreateBoardAnySize extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), PlayGame.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt("columns", Integer.parseInt(String.valueOf(boardInfo.getSize().charAt(0))));
-                    bundle.putInt("rows", Integer.parseInt(boardInfo.getSize().substring(boardInfo.getSize().length()-1)));
+                    bundle.putInt("rows", Integer.parseInt(boardInfo.getSize().substring(boardInfo.getSize().length() - 1)));
                     intent.putExtras(bundle);
                     startActivity(intent);
                     finish();
                 }
             });
-
             menuGridLayout.addView(mainLinLay);
         }
-
     }
 
     public int getScreenWidthInPixels() {
@@ -167,27 +132,8 @@ public class CreateBoardAnySize extends AppCompatActivity {
         return dm.heightPixels;
     }
 
-    private void makeInputLimit(EditText editText, int min, int max) {
-        editText.setFilters(new InputFilter[]{new InputFilterMinMax(min, max)});
-    }
-
     public String loadSharedPrefs(String key) {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS_POOL, MODE_PRIVATE);
         return sharedPreferences.getString(key, "0");
     }
-
-//    public void setAllBestResults(){
-//        textRes_44 = findViewById(R.id.textViewBestResult_4x4);
-//        textRes_44.setText(bestRes_44);
-//        textRes_55 = findViewById(R.id.textViewBestResult_5x5);
-//        textRes_55.setText(bestRes_55);
-//        textRes_66 = findViewById(R.id.textViewBestResult_6x6);
-//        textRes_66.setText(bestRes_66);
-//        textRes_77 = findViewById(R.id.textViewBestResult_7x7);
-//        textRes_77.setText(bestRes_77);
-//        textRes_88 = findViewById(R.id.textViewBestResult_8x8);
-//        textRes_88.setText(bestRes_88);
-//        textRes_99 = findViewById(R.id.textViewBestResult_9x9);
-//        textRes_99.setText(bestRes_99);
-//    }
 }
