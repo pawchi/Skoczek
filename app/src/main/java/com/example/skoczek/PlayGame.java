@@ -38,6 +38,7 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
     int row;
     String currentBoard_KEY;
     ImageView backButton;
+    TextView resetBoardTextView;
 
 
     @Override
@@ -47,6 +48,8 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +71,21 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         result = findViewById(R.id.textBestCurrentResultAnySize);
         bestResult = findViewById(R.id.textBestResultEverAnySize);
         currentBoardSize = findViewById(R.id.textCurrantBoardSize);
+
+        resetBoardTextView = findViewById(R.id.textViewResetBoard);
+        resetBoardTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveSharedPrefs();
+                currentResult=0;
+                result.setText("0");
+                gridLayoutAnySize.removeAllViews();
+                createGridLayout(gridLayoutAnySize);
+                loadSharedPrefs();
+                bestResult.setText(Integer.toString(bestResultEver));
+
+            }
+        });
 
         gridLayoutAnySize = findViewById(R.id.gridLayoutAnySize);
         gridLayoutAnySize.removeAllViews();
