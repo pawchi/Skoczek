@@ -31,9 +31,8 @@ public class WelcomeAnimation extends AppCompatActivity {
 
         animatedImage = findViewById(R.id.imageView_animated);
 
-        YoYo.with(Techniques.Flash)
+        YoYo.with(Techniques.StandUp)
                 .duration(1500)
-                .delay(1000)
                 .withListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {
@@ -42,7 +41,7 @@ public class WelcomeAnimation extends AppCompatActivity {
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
-                        nextAnimation();
+                        //nextAnimation();
                     }
 
                     @Override
@@ -59,7 +58,7 @@ public class WelcomeAnimation extends AppCompatActivity {
 
 
         //'WELCOME SCREEN' for 4s
-        int WELCOME_SCREEN_TIME_OUT = 3000;
+        int WELCOME_SCREEN_TIME_OUT = 1500;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -96,7 +95,7 @@ public class WelcomeAnimation extends AppCompatActivity {
     }
 
     public void nextAnimation(){
-        YoYo.with(Techniques.Wave)
+        YoYo.with(Techniques.Flash)
                 .duration(1500)
                 .playOn(animatedImage);
     }

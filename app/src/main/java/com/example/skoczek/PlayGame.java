@@ -1,5 +1,6 @@
 package com.example.skoczek;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -18,6 +19,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
 import java.util.Locale;
 
 public class PlayGame extends AppCompatActivity implements View.OnClickListener {
@@ -31,7 +35,7 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
     public static String SHARED_PREFS_CURRENT_KEY;
 
     GridLayout gridLayoutAnySize;
-    TextView result, bestResult, currentBoardSize;
+    TextView result, scoreForBestResult, textForBestResult, currentBoardSize;
     int currentResult = 0;
     int bestResultEver = 0;
     int column;
@@ -39,7 +43,8 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
     String currentBoard_KEY;
     ImageView backButton;
     TextView resetBoardTextView;
-
+    int newRecordSignalLimiter = 0;
+    LinearLayout linearLayoutBestResult;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -48,8 +53,6 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         }
         return super.onKeyDown(keyCode, event);
     }
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,8 +71,10 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
             }
         });
 
+        linearLayoutBestResult = findViewById(R.id.layoutBestResult);
         result = findViewById(R.id.textBestCurrentResultAnySize);
-        bestResult = findViewById(R.id.textBestResultEverAnySize);
+        scoreForBestResult = findViewById(R.id.scoreForBestResultEverAnySize);
+        textForBestResult = findViewById(R.id.textForBestScore);
         currentBoardSize = findViewById(R.id.textCurrantBoardSize);
 
         resetBoardTextView = findViewById(R.id.textViewResetBoard);
@@ -79,10 +84,13 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
                 saveSharedPrefs();
                 currentResult=0;
                 result.setText("0");
+                linearLayoutBestResult.setBackground(getResources().getDrawable(R.drawable.button_border,null));
+                scoreForBestResult.setText(Integer.toString(bestResultEver));
+                textForBestResult.setText("Najlepszy wynik: ");
                 gridLayoutAnySize.removeAllViews();
                 createGridLayout(gridLayoutAnySize);
                 loadSharedPrefs();
-                bestResult.setText(Integer.toString(bestResultEver));
+                scoreForBestResult.setText(Integer.toString(bestResultEver));
 
             }
         });
@@ -98,11 +106,40 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
         }
         currentBoardSize.setText(Integer.toString(column)+ " x " + Integer.toString(row));
         loadSharedPrefs();
-        bestResult.setText(Integer.toString(bestResultEver));
+        scoreForBestResult.setText(Integer.toString(bestResultEver));
         createGridLayout(gridLayoutAnySize);
 
 
 
+    }
+
+    private void newRecordSignal() {
+
+        linearLayoutBestResult.setBackground(getResources().getDrawable(R.drawable.button_border_new_record,null));
+        textForBestResult.setText("New Record!!!");
+        scoreForBestResult.setText("");
+
+        YoYo.with(Techniques.Flash)
+                .duration(1500)
+                .withListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+                    }
+                })
+                .playOn(linearLayoutBestResult);
+        newRecordSignalLimiter=1;
     }
 
 
@@ -184,6 +221,9 @@ public class PlayGame extends AppCompatActivity implements View.OnClickListener 
             field.setText(Integer.toString(currentResult));
             showPossibleMoves(posX, posY);
             result.setText(String.format(Locale.getDefault(), "%d", currentResult));
+            if (currentResult>bestResultEver&&newRecordSignalLimiter==0){
+                newRecordSignal();
+            }
         }
     }
 
